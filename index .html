@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mood's Café · Restaurant | Marina Casablanca</title>
+  <meta name="description" content="Mood's Café Restaurant — Cuisine méditerranéenne, Tea Time, Grillades au feu de bois. Marina de Casablanca. Ouvert 7j/7." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --noir:#0D0B09;--noir2:#161210;--or:#C9A96E;--or2:#DFC28F;
+      --creme:#F5EDDA;--gris:rgba(245,237,218,.55);--T:cubic-bezier(.4,0,.2,1)
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Jost',sans-serif;background:var(--noir);color:var(--creme);overflow-x:hidden;cursor:none}
+    .cur{width:8px;height:8px;background:var(--or);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+    .cur-f{width:34px;height:34px;border:1px solid rgba(201,169,110,.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+    @media(max-width:768px){.cur,.cur-f{display:none}body{cursor:auto}a,button{cursor:pointer}}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:900;padding:26px 60px;display:flex;align-items:center;justify-content:space-between;transition:background .5s,padding .4s}
+    nav.sc{background:rgba(13,11,9,.94);backdrop-filter:blur(20px);padding:16px 60px;border-bottom:1px solid rgba(201,169,110,.1)}
+    .nlogo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--creme);text-decoration:none}
+    .nlogo em{color:var(--or);font-style:italic}
+    .nlinks{display:flex;gap:40px;list-style:none}
+    .nlinks a{font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,237,218,.6);text-decoration:none;transition:color .3s;position:relative}
+    .nlinks a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--or);transform:scaleX(0);transform-origin:right;transition:transform .35s var(--T)}
+    .nlinks a:hover{color:var(--creme)}
+    .nlinks a:hover::after{transform:scaleX(1);transform-origin:left}
+    .ncta{border:1px solid var(--or)!important;color:var(--or)!important;padding:9px 22px}
+    .ncta:hover{background:var(--or)!important;color:var(--noir)!important}
+    .ncta::after{display:none!important}
+    .hbg{display:none;flex-direction:column;gap:6px;background:none;border:none;cursor:none}
+    .hbg span{width:26px;height:1px;background:var(--creme);display:block;transition:transform .3s,opacity .3s}
+    .hbg.on span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hbg.on span:nth-child(2){opacity:0}
+    .hbg.on span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    .mob{position:fixed;inset:0;background:var(--noir);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;z-index:850;opacity:0;pointer-events:none;transition:opacity .4s}
+    .mob.on{opacity:1;pointer-events:all}
+    .mob a{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--creme);text-decoration:none;transition:color .3s}
+    .mob a:hover{color:var(--or)}
+
+    /* HERO */
+    #hero{height:100vh;min-height:650px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .hbg2{position:absolute;inset:0;background:url('hero-terrasse.jpg') center/cover no-repeat;filter:brightness(.32) saturate(.8);transform:scale(1.06);transition:transform 9s ease-out}
+    .hov{position:absolute;inset:0;background:linear-gradient(160deg,rgba(13,11,9,.78) 0%,rgba(13,11,9,.38) 50%,rgba(13,11,9,.9) 100%)}
+    .hcon{position:relative;z-index:2;text-align:center;padding:0 20px}
+    .hlogo{width:210px;margin:0 auto 34px;display:block;opacity:0;animation:fup 1s .3s forwards;filter:brightness(0) invert(1)}
+    .heyebrow{font-size:.67rem;letter-spacing:.28em;text-transform:uppercase;color:var(--or);margin-bottom:20px;opacity:0;animation:fup 1s .6s forwards}
+    .htitle{font-family:'Playfair Display',serif;font-size:clamp(3rem,8vw,7.5rem);font-weight:400;line-height:.95;margin-bottom:28px;opacity:0;animation:fup 1s .85s forwards}
+    .htitle em{color:var(--or);font-style:italic}
+    .hsub{font-size:clamp(.85rem,1.4vw,1rem);font-weight:200;letter-spacing:.14em;color:rgba(245,237,218,.7);margin-bottom:46px;opacity:0;animation:fup 1s 1.1s forwards}
+    .hbtns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fup 1s 1.3s forwards}
+    .bgold{background:var(--or);color:var(--noir);padding:15px 38px;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border:none;cursor:none;transition:background .3s,transform .3s;display:inline-block}
+    .bgold:hover{background:var(--or2);transform:translateY(-2px)}
+    .bline{border:1px solid rgba(245,237,218,.4);color:var(--creme);padding:15px 38px;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;cursor:none;transition:border-color .3s,background .3s,transform .3s;display:inline-block}
+    .bline:hover{border-color:var(--creme);background:rgba(245,237,218,.05);transform:translateY(-2px)}
+    .scrl{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2;opacity:0;animation:fin 1s 2s forwards}
+    .scrl span{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,237,218,.42)}
+    .scrl-l{width:1px;height:54px;background:linear-gradient(to bottom,var(--or),transparent);animation:pls 2s ease-in-out infinite}
+
+    /* MARQUEE */
+    .mq{background:var(--or);padding:13px 0;overflow:hidden;display:flex}
+    .mq-t{display:flex;animation:mq 24s linear infinite;white-space:nowrap}
+    .mq-i{font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:var(--noir);padding:0 36px;display:flex;align-items:center;gap:36px}
+    .mq-i::after{content:'✦';font-size:.44rem}
+
+    /* ABOUT */
+    #about{padding:130px 60px;display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:center;max-width:1380px;margin:0 auto}
+    .av{position:relative}
+    .av-main{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+    .av-acc{position:absolute;bottom:-36px;right:-36px;width:52%;aspect-ratio:1;object-fit:cover;border:6px solid var(--noir)}
+    .av-badge{position:absolute;top:-18px;left:-18px;width:110px;height:110px;background:var(--or);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2}
+    .av-badge strong{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--noir);line-height:1}
+    .av-badge span{font-size:.54rem;letter-spacing:.13em;color:var(--noir);text-transform:uppercase}
+    .tag{font-size:.65rem;letter-spacing:.26em;text-transform:uppercase;color:var(--or);margin-bottom:17px;display:block}
+    .h2{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,3.8vw,3rem);font-weight:400;line-height:1.14;margin-bottom:24px}
+    .h2 em{color:var(--or);font-style:italic}
+    .btxt{font-size:.92rem;font-weight:300;line-height:1.92;color:var(--gris);margin-bottom:16px}
+    .stats{display:flex;gap:38px;margin-top:44px;padding-top:34px;border-top:1px solid rgba(201,169,110,.17)}
+    .sn{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--or);display:block;line-height:1}
+    .sl{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,237,218,.4);margin-top:5px;display:block}
+
+    /* ─── MENU ─── */
+    #menu{padding:110px 60px;background:var(--noir2)}
+    .shdr{text-align:center;margin-bottom:70px}
+    .tabs{display:flex;justify-content:center;gap:0;margin-bottom:62px;border-bottom:1px solid rgba(201,169,110,.17);flex-wrap:wrap}
+    .tab{background:none;border:none;cursor:none;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,237,218,.36);padding:15px 28px;transition:color .3s;position:relative}
+    .tab::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--or);transform:scaleX(0);transition:transform .3s}
+    .tab.on,.tab:hover{color:var(--creme)}
+    .tab.on::after{transform:scaleX(1)}
+    .tc{display:none}
+    .tc.on{display:block}
+
+    /* grid — items WITH image */
+    .mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2px;max-width:1200px;margin:0 auto}
+    .mi{background:rgba(245,237,218,.025);border:1px solid rgba(201,169,110,.07);transition:background .3s,border-color .3s;display:flex;flex-direction:column}
+    .mi:hover{background:rgba(201,169,110,.055);border-color:rgba(201,169,110,.18)}
+    .mi img{width:100%;height:200px;object-fit:cover;display:block}
+    .mi-b{padding:22px 24px 26px;flex:1;display:flex;flex-direction:column}
+    .mi-name{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:6px;color:var(--creme);line-height:1.3}
+    .mi-desc{font-size:.79rem;color:rgba(245,237,218,.42);font-weight:300;line-height:1.65;margin-bottom:12px;flex:1}
+    .mi-price{font-size:.8rem;letter-spacing:.1em;color:var(--or);margin-top:auto}
+
+    /* PDF download strip */
+    .pdf-strip{max-width:1200px;margin:56px auto 0;border:1px solid rgba(201,169,110,.2);padding:36px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    .pdf-strip-txt h3{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:6px}
+    .pdf-strip-txt p{font-size:.82rem;color:var(--gris);font-weight:300}
+    .bdl{display:inline-flex;align-items:center;gap:10px;background:var(--or);color:var(--noir);padding:14px 34px;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;cursor:none;transition:background .3s,transform .3s;white-space:nowrap}
+    .bdl:hover{background:var(--or2);transform:translateY(-2px)}
+
+    /* ─── GALLERY — Pexels café face mer ─── */
+    #gallery{padding:110px 60px}
+    .ghdr{text-align:center;margin-bottom:64px}
+    .gg{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;max-width:1380px;margin:0 auto}
+    .gi{overflow:hidden}
+    .gi img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s var(--T)}
+    .gi:hover img{transform:scale(1.055)}
+    .gi:nth-child(1){grid-column:1/6;height:400px}
+    .gi:nth-child(2){grid-column:6/9;height:400px}
+    .gi:nth-child(3){grid-column:9/13;height:400px}
+    .gi:nth-child(4){grid-column:1/5;height:320px}
+    .gi:nth-child(5){grid-column:5/9;height:320px}
+    .gi:nth-child(6){grid-column:9/13;height:320px}
+
+    /* EXPERIENCE */
+    #experience{padding:120px 60px}
+    .ecards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,169,110,.1);max-width:1160px;margin:0 auto 90px}
+    .ec{background:var(--noir);padding:54px 42px;text-align:center;transition:background .3s}
+    .ec:hover{background:var(--noir2)}
+    .ec-ico{font-size:1.8rem;margin-bottom:20px;display:block}
+    .ec h3{font-family:'Playfair Display',serif;font-size:1.22rem;margin-bottom:12px}
+    .ec p{font-size:.85rem;color:var(--gris);line-height:1.82;font-weight:300}
+    .fb{display:grid;grid-template-columns:1fr 1fr;max-width:1380px;margin:0 auto;overflow:hidden;min-height:500px}
+    .fb img{width:100%;height:100%;object-fit:cover;display:block}
+    .fb-txt{background:var(--or);padding:72px 62px;display:flex;flex-direction:column;justify-content:center}
+    .fb-txt .tag{color:var(--noir)}
+    .fb-txt .h2{color:var(--noir)}
+    .fb-txt p{font-size:.95rem;color:rgba(13,11,9,.72);line-height:1.9;font-weight:300;margin-bottom:30px}
+    .bdark{background:var(--noir);color:var(--creme);padding:14px 34px;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;display:inline-block;transition:background .3s,transform .3s;cursor:none}
+    .bdark:hover{background:#231c12;transform:translateY(-2px)}
+
+    /* REVIEWS */
+    #reviews{padding:110px 60px;background:var(--noir2)}
+    .rg{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1160px;margin:0 auto}
+    .rv{border:1px solid rgba(201,169,110,.13);padding:40px 34px}
+    .rvq{font-size:2.8rem;color:var(--or);font-family:'Playfair Display',serif;line-height:1;margin-bottom:16px;opacity:.44}
+    .rvt{font-size:.9rem;line-height:1.88;color:rgba(245,237,218,.66);font-weight:300;font-style:italic;margin-bottom:22px}
+    .rvs{color:var(--or);font-size:.7rem;letter-spacing:3px;margin-bottom:13px}
+    .rva{font-size:.75rem;letter-spacing:.13em;text-transform:uppercase;color:var(--or)}
+    .rvp{font-size:.7rem;color:rgba(245,237,218,.34);margin-top:3px}
+
+    /* LOCATION */
+    #location{padding:110px 60px}
+    .lw{display:grid;grid-template-columns:1fr 1fr;gap:70px;max-width:1160px;margin:0 auto;align-items:start}
+    .ir{display:flex;gap:18px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(201,169,110,.1)}
+    .ii{color:var(--or);font-size:1rem;margin-top:2px;flex-shrink:0}
+    .il{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,237,218,.36);margin-bottom:3px;display:block}
+    .iv{font-size:.92rem;color:var(--creme)}
+    .iv a{color:var(--or);text-decoration:none}
+    .mw{height:440px;overflow:hidden}
+    .mw iframe{width:100%;height:100%;border:none;filter:grayscale(100%) invert(92%) contrast(.88)}
+    .lbtns{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+
+    /* FOOTER */
+    footer{background:var(--noir);border-top:1px solid rgba(201,169,110,.1);padding:74px 60px 36px}
+    .fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:52px;margin-bottom:62px}
+    .flogo{font-family:'Playfair Display',serif;font-size:2rem;color:var(--creme);display:block;margin-bottom:16px}
+    .flogo em{color:var(--or);font-style:italic}
+    .ftag{font-size:.82rem;color:rgba(245,237,218,.44);line-height:1.82;font-weight:300;margin-bottom:22px}
+    .fsoc{display:flex;gap:13px}
+    .fsl{width:36px;height:36px;border:1px solid rgba(201,169,110,.2);display:flex;align-items:center;justify-content:center;color:rgba(245,237,218,.48);text-decoration:none;font-size:.75rem;transition:border-color .3s,color .3s}
+    .fsl:hover{border-color:var(--or);color:var(--or)}
+    .fc h4{font-size:.65rem;letter-spacing:.24em;text-transform:uppercase;color:var(--or);margin-bottom:20px}
+    .fc ul{list-style:none}
+    .fc li{margin-bottom:10px}
+    .fc a{font-size:.85rem;color:rgba(245,237,218,.48);text-decoration:none;transition:color .3s}
+    .fc a:hover{color:var(--creme)}
+    .fc p{font-size:.85rem;color:rgba(245,237,218,.48);line-height:1.8}
+    .fbot{border-top:1px solid rgba(201,169,110,.09);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+    .fbot p{font-size:.72rem;color:rgba(245,237,218,.25)}
+    .tab2{display:flex;align-items:center;gap:8px;font-size:.7rem;color:rgba(245,237,218,.33)}
+    .tdot{width:7px;height:7px;background:#00AA6C;border-radius:50%}
+
+    /* ANIMATIONS */
+    @keyframes fup{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fin{from{opacity:0}to{opacity:1}}
+    @keyframes pls{0%,100%{opacity:1}50%{opacity:.3}}
+    @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .r{opacity:0;transform:translateY(34px);transition:opacity .8s var(--T),transform .8s var(--T)}
+    .r.v{opacity:1;transform:translateY(0)}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+    /* RESPONSIVE */
+    @media(max-width:1100px){
+      #about{grid-template-columns:1fr;gap:50px;padding:80px 30px}
+      .av-acc{display:none}
+      .fb{grid-template-columns:1fr}
+      .fg{grid-template-columns:1fr 1fr}
+      .lw{grid-template-columns:1fr}
+      .rg{grid-template-columns:1fr 1fr}
+      .ecards{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:768px){
+      nav{padding:20px 22px}
+      nav.sc{padding:14px 22px}
+      .nlinks{display:none}
+      .hbg{display:flex}
+      #menu,#gallery,#experience,#reviews,#location{padding:70px 22px}
+      footer{padding:54px 22px 28px}
+      .gg{grid-template-columns:1fr 1fr}
+      .gi{grid-column:auto!important;height:220px!important}
+      .ecards{grid-template-columns:1fr}
+      .rg{grid-template-columns:1fr}
+      .fg{grid-template-columns:1fr;gap:34px}
+      .fb-txt{padding:42px 26px}
+      .hbtns{flex-direction:column;align-items:center}
+      .tabs{flex-wrap:wrap}
+      .tab{padding:11px 15px;font-size:.65rem}
+      .lbtns{flex-direction:column}
+      .pdf-strip{flex-direction:column;align-items:flex-start}
+      .fbot{flex-direction:column;align-items:flex-start}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cur" id="C"></div>
+<div class="cur-f" id="CF"></div>
+
+<!-- NAV -->
+<nav id="NAV">
+  <a href="#" class="nlogo">mood<em>'s</em></a>
+  <ul class="nlinks">
+    <li><a href="#about">Histoire</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#gallery">Galerie</a></li>
+    <li><a href="#reviews">Avis</a></li>
+    <li><a href="#location" class="ncta">Réserver</a></li>
+  </ul>
+  <button class="hbg" id="HBG" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob" id="MOB">
+  <a href="#about">Histoire</a><a href="#menu">Menu</a>
+  <a href="#gallery">Galerie</a><a href="#reviews">Avis</a>
+  <a href="#location">Contact</a>
+</div>
+
+<!-- HERO — Pexels restaurant terrasse vue mer -->
+<section id="hero">
+  <div class="hbg2" id="HBG2"></div>
+  <div class="hov"></div>
+  <div class="hcon">
+    <img class="hlogo" src="https://moods.ma/menu/wp-content/uploads/2025/06/Logo-Official-1.png" alt="Mood's" onerror="this.style.display='none'" />
+    <p class="heyebrow">Marina Shopping Center · Casablanca · Ouvert 7j/7</p>
+    <h1 class="htitle">Où chaque instant<br>devient un <em>mood</em></h1>
+    <p class="hsub">Cuisine méditerranéenne · Tea Time · Grillades au feu de bois</p>
+    <div class="hbtns">
+      <a href="#menu" class="bgold">Voir le menu</a>
+      <a href="tel:0522202025" class="bline">05 22 20 20 25</a>
+    </div>
+  </div>
+  <div class="scrl"><span>Découvrir</span><div class="scrl-l"></div></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq" aria-hidden="true">
+  <div class="mq-t">
+    <span class="mq-i">Cuisine Méditerranéenne</span><span class="mq-i">Tea Time</span>
+    <span class="mq-i">Grillades au Feu de Bois</span><span class="mq-i">Traveler's Choice 2022</span>
+    <span class="mq-i">Marina Casablanca</span><span class="mq-i">Vue Océan Atlantique</span>
+    <span class="mq-i">Sushi Bar</span><span class="mq-i">Live Music</span>
+    <span class="mq-i">Cuisine Méditerranéenne</span><span class="mq-i">Tea Time</span>
+    <span class="mq-i">Grillades au Feu de Bois</span><span class="mq-i">Traveler's Choice 2022</span>
+    <span class="mq-i">Marina Casablanca</span><span class="mq-i">Vue Océan Atlantique</span>
+    <span class="mq-i">Sushi Bar</span><span class="mq-i">Live Music</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="av r">
+    <img class="av-main" src="https://moods.ma/menu/wp-content/uploads/2022/07/Tangerois-400x400.jpg" alt="Petit déjeuner Mood's" loading="lazy" />
+    <img class="av-acc" src="about-marina-wide.jpg" alt="Vue Marina Casablanca" loading="lazy" />
+    <div class="av-badge"><strong>TC</strong><span>2022</span></div>
+  </div>
+  <div>
+    <span class="tag r">Notre Histoire</span>
+    <h2 class="h2 r d1">Un lieu pensé<br>pour <em>toutes les humeurs</em></h2>
+    <p class="btxt r d2">Mood's est né d'une conviction simple : chaque repas mérite d'être une expérience. Niché au cœur de la Marina de Casablanca, notre café-restaurant conjugue l'élégance d'une cuisine méditerranéenne authentique avec la chaleur d'un accueil sans égal.</p>
+    <p class="btxt r d2">Lauréat du <strong style="color:var(--or)">Traveler's Choice 2022</strong> de TripAdvisor, Mood's vous accueille chaque jour du petit-déjeuner au dîner. Vue sur l'Atlantique, terrasse face à la Marina, live music les soirs de weekend.</p>
+    <div class="stats">
+      <div class="r d2"><span class="sn">4.8</span><span class="sl">Note Google</span></div>
+      <div class="r d3"><span class="sn">7k+</span><span class="sl">Avis clients</span></div>
+      <div class="r d4"><span class="sn">7j/7</span><span class="sl">Ouvert</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     MENU — UNIQUEMENT images de moods.ma/menu/
+     Pas d'image disponible = plat retiré
+════════════════════════════════════════════ -->
+<section id="menu">
+  <div class="shdr">
+    <span class="tag r">Notre Carte</span>
+    <h2 class="h2 r d1">Une cuisine qui <em>voyage</em></h2>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-t="pdj">Petit Déjeuner</button>
+    <button class="tab" data-t="ent">Entrées</button>
+    <button class="tab" data-t="plats">Plats</button>
+    <button class="tab" data-t="dss">Desserts</button>
+    <button class="tab" data-t="bsn">Boissons</button>
+  </div>
+
+  <!-- ── PETIT DÉJEUNER — 100% moods.ma ── -->
+  <div class="tc on" id="tc-pdj">
+    <div class="mgrid">
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Francais-2-400x400.jpg" alt="Made in France" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Petit Déjeuner Made in France</p><p class="mi-desc">Viennoiseries, beurre, confiture, café ou thé</p><span class="mi-price">95 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Tangerois-400x400.jpg" alt="Tangerois" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Petit Déjeuner Tangerois</p><p class="mi-desc">Assortiment marocain, msemen, œuf, mint tea</p><span class="mi-price">105 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Italien-2-400x400.jpg" alt="Made in Italy" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Petit Déjeuner Made in Italy</p><p class="mi-desc">Bruschetta, charcuterie halal, cappuccino</p><span class="mi-price">115 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Americain-2-400x400.jpg" alt="Made in USA" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Petit Déjeuner Made in USA</p><p class="mi-desc">Pancakes, œufs au choix, bacon halal, jus</p><span class="mi-price">125 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Healthy-400x400.jpg" alt="Healthy" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Petit Déjeuner Healthy</p><p class="mi-desc">Muesli, yaourt maison, fruits de saison, smoothie</p><span class="mi-price">120 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/libanais-400x400.jpg" alt="Libanais" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Petit Déjeuner Libanais</p><p class="mi-desc">Labneh, houmous, fatayer, fromages, olives</p><span class="mi-price">130 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Pain-baguette-400x400.jpg" alt="Corbeille pain" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Corbeille de pain, beurre, confiture</p><p class="mi-desc"></p><span class="mi-price">20 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Viennoiserie-400x400.jpg" alt="Viennoiserie" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Panier de Viennoiserie</p><p class="mi-desc"></p><span class="mi-price">25 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/IMG_6915-400x400.jpg" alt="Assortiment Marocain" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Assortiment Marocain</p><p class="mi-desc"></p><span class="mi-price">30 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Khliee-400x400.jpg" alt="Tagine Khlii" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tagine d'œuf au Khlii</p><p class="mi-desc"></p><span class="mi-price">40 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Oeufs-1-400x400.jpg" alt="Oeufs" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Oeufs au choix</p><p class="mi-desc">Brouillés, au plat, pochés ou coque</p><span class="mi-price">25 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Pain-perdu-400x400.jpg" alt="Pain perdu" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pain perdu caramélisé à la cannelle</p><p class="mi-desc"></p><span class="mi-price">20 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Cupcake-400x400.jpg" alt="Cupcake" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Cupcake chocolat et noisettes torréfiées</p><p class="mi-desc"></p><span class="mi-price">20 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Charcuterie-400x400.jpg" alt="Charcuterie" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Assiette de charcuterie Halal</p><p class="mi-desc"></p><span class="mi-price">30 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Libanais-003-400x400.jpg" alt="Chakchouka" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Oeufs Chakchouka</p><p class="mi-desc"></p><span class="mi-price">40 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Yaourt-pdjpg-400x400.jpg" alt="Yaourt" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Yaourt Maison</p><p class="mi-desc"></p><span class="mi-price">17 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Bole-de-fruit-400x400.jpg" alt="Fruits" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Bol de fruits de saison</p><p class="mi-desc"></p><span class="mi-price">20 Dhs</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ENTRÉES — 100% moods.ma ── -->
+  <div class="tc" id="tc-ent">
+    <div class="mgrid">
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-001-400x400.jpg" alt="Salade Grecque" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Salade Grecque au Houmous</p><p class="mi-desc">Concombre, tomate, feta, houmous maison</p><span class="mi-price">80 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/4-Salade-César-400x400.jpg" alt="Salade César" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Salade César au Poulet</p><p class="mi-desc">Poulet grillé, parmesan, croûtons, sauce César</p><span class="mi-price">90 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/3-Salade-fromage-de-chèvre-400x400.jpg" alt="Fromage Chèvre" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Salade de Fromage de Chèvre</p><p class="mi-desc">Mesclun, noix, miel, vinaigrette</p><span class="mi-price">95 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/5-Tartare-400x400.jpg" alt="Tartare" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tartare de Mangue et Gambas</p><p class="mi-desc">Fraîcheur exotique, vinaigrette citron-gingembre</p><span class="mi-price">110 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-000-400x400.jpg" alt="Burrata" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Salade de Burrata</p><p class="mi-desc">Tomates cerises, basilic frais, huile d'olive</p><span class="mi-price">120 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC01345-400x400.jpg" alt="Cold Mezzé" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Cold Mezzé Libanais</p><p class="mi-desc">Houmous, moutabal, labneh, taboulé, fattouche</p><span class="mi-price">115 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC01355-400x400.jpg" alt="Warak Enab" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Warak Enab</p><p class="mi-desc">Feuilles de vigne farcies, citron</p><span class="mi-price">50 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/02/DSC00648-400x400.jpg" alt="Mezzé Marocain" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Mezzé Marocain à Partager</p><p class="mi-desc">Briouates, kefta, légumes grillés</p><span class="mi-price">130 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC01369-400x400.jpg" alt="Samboussek fromage" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Samboussek au Fromage</p><p class="mi-desc">Feuilletés croustillants au fromage</p><span class="mi-price">55 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC01365-400x400.jpg" alt="Falafel" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Falafel</p><p class="mi-desc">Pois chiches, herbes, sauce tahini</p><span class="mi-price">40 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC01367-400x400.jpg" alt="Samboussek viande" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Samboussek à la Viande</p><p class="mi-desc">Feuilletés à la viande épicée</p><span class="mi-price">65 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC01368-400x400.jpg" alt="Fatayer épinards" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Fatayer aux Épinards</p><p class="mi-desc">Chaussons épinards, oignons, sumac</p><span class="mi-price">50 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC01359999-400x400.jpg" alt="Hot Mezzé" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Hot Mezzé Libanais</p><p class="mi-desc">Assortiment chaud à partager</p><span class="mi-price">140 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC01361-400x400.jpg" alt="Kibbeh" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Lebanese Kibbeh</p><p class="mi-desc">Boulettes de viande et boulgour</p><span class="mi-price">65 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/1-Nems-400x400.jpg" alt="Nems Gambas" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Nems aux Gambas</p><p class="mi-desc">Croustillants, sauce aigre-douce</p><span class="mi-price">95 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Soupe-poissons-400x400.jpeg" alt="Soupe Poissons" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Soupe de Poissons</p><p class="mi-desc">Bisque maison, croutons, rouille safranée</p><span class="mi-price">85 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/2-Beignets-de-Calamar-400x400.jpg" alt="Beignets Calamars" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Beignets de Calamars</p><p class="mi-desc">Panés, citron, sauce tartare maison</p><span class="mi-price">115 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Gambas-Pil-Pil-400x400.jpeg" alt="Gambas Pil-Pil" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Gambas Pil-Pil</p><p class="mi-desc">Gambas marinées, ail, piment, huile d'olive</p><span class="mi-price">120 Dhs</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PLATS — 100% moods.ma ── -->
+  <div class="tc" id="tc-plats">
+    <div class="mgrid">
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/2-Pizza-Margarita-400x400.jpg" alt="Margherita" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pizza Margherita</p><p class="mi-desc">Four à bois, tomate, mozzarella, basilic</p><span class="mi-price">75 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/4-Pizza-Vegetarienne-400x400.jpg" alt="Végétarienne" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pizza Végétarienne</p><p class="mi-desc">Légumes de saison, mozzarella, four à bois</p><span class="mi-price">85 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/1-Pizza-Sicillienne-400x400.jpg" alt="Sicilienne" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pizza Sicilienne</p><p class="mi-desc">Anchois, câpres, olives, tomate</p><span class="mi-price">95 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-009-400x400.jpg" alt="Mexicaine" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pizza Mexicaine</p><p class="mi-desc">Jalapeños, viande hachée, cheddar, salsa</p><span class="mi-price">95 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/7-Peperoni-400x400.jpg" alt="Pepperoni" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pizza Pepperoni</p><p class="mi-desc">Sauce tomate, mozzarella, pepperoni halal</p><span class="mi-price">110 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/5-Pizza-4-fromages-400x400.jpg" alt="Quatre fromages" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pizza Quatre Fromages</p><p class="mi-desc">Mozzarella, gorgonzola, parmesan, chèvre</p><span class="mi-price">110 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/6-Pizza-Fruits-de-mer-400x400.jpg" alt="Fruits de mer" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pizza aux Fruits de Mer</p><p class="mi-desc">Gambas, calamars, moules, bisque</p><span class="mi-price">120 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-008-400x400.jpg" alt="Truffe" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pizza à la Truffe</p><p class="mi-desc">Crème de truffe, mozzarella, roquette</p><span class="mi-price">110 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/3-Spaghetti-Bolognaise-400x400.jpg" alt="Spaghetti" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Spaghetti Bolognaise</p><p class="mi-desc">Sauce viande maison, parmesan</p><span class="mi-price">95 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/1-Tagliatelle-aux-champignons-400x400.jpg" alt="Tagliatelles champignons" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tagliatelles aux Champignons</p><p class="mi-desc">Crème, champignons des bois, truffe</p><span class="mi-price">95 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC00636-400x400.jpg" alt="Lasagne" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Lasagne Bolognaise</p><p class="mi-desc">Béchamel maison, viande, gratinée</p><span class="mi-price">105 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-010-400x400.jpg" alt="Penne poulet" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Penne Poulet aux Champignons</p><p class="mi-desc">Sauce crème, poulet, champignons</p><span class="mi-price">115 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/02/DSC00603-400x400.jpg" alt="Tagliatelles saumon" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tagliatelles au Saumon</p><p class="mi-desc">Saumon fumé, crème citronnée</p><span class="mi-price">120 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/02/DSC00637-400x400.jpg" alt="Gratin fruits de mer" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Gratin de Fruits de Mer</p><p class="mi-desc">Gambas, calamars, béchamel gratinée</p><span class="mi-price">115 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/02/DSC00604-400x400.jpg" alt="Linguine" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Linguine aux Fruits de Mer</p><p class="mi-desc">Gambas, palourdes, calamars, bisque</p><span class="mi-price">140 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/4-Risotto-fruit-de-mer-1-400x400.jpg" alt="Risotto fruits mer" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Risotto aux Fruits de Mer</p><p class="mi-desc">Riz arborio, gambas, calamars, moules</p><span class="mi-price">150 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-015-400x400.jpg" alt="Risotto truffes" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Risotto à la Crème de Truffes</p><p class="mi-desc">Truffe noire, parmesan affiné</p><span class="mi-price">150 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-016-400x400.jpg" alt="Risotto gambas chermoula" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Risotto Gambas Chermoula</p><p class="mi-desc">Gambas marinées à la chermoula marocaine</p><span class="mi-price">160 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-019-400x400.jpg" alt="Tacos viande" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tacos Viande Hachée Grillée</p><p class="mi-desc">Cheddar, oignons caramélisés</p><span class="mi-price">85 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-021-400x400.jpg" alt="Tacos poulet" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tacos Poulet Mariné Grillé</p><p class="mi-desc">Avocat, salsa, coriandre</p><span class="mi-price">80 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-023-400x400.jpg" alt="Tacos poisson" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tacos Poisson Croustillant</p><p class="mi-desc">Cabillaud pané, coleslaw, citron</p><span class="mi-price">95 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-024-400x400.jpg" alt="Tacos gambas" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tacos Gambas Marinées</p><p class="mi-desc">Gambas, avocat, sauce épicée</p><span class="mi-price">105 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2024/10/Emince-de-poulet-98-400x400.jpg" alt="Poulet Teriyaki" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Poulet Sauce Teriyaki</p><p class="mi-desc">Riz basmati, sésame, ciboulette</p><span class="mi-price">140 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2024/10/Emince-de-poulet-15-400x400.jpg" alt="Poulet Aigre-Doux" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Poulet Croustillant Aigre-Doux</p><p class="mi-desc">Sauce aigre-douce, légumes wok</p><span class="mi-price">140 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2024/10/Emince-de-poulet-96-400x400.jpg" alt="Poulet Truffe" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Suprême de Poulet à la Truffe</p><p class="mi-desc">Sauce truffée, légumes grillés</p><span class="mi-price">140 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/02/DSC00671-400x400.jpg" alt="Wok Beef" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Wok Beef</p><p class="mi-desc">Bœuf, poivrons, oignons, sauce huître</p><span class="mi-price">120 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/02/DSC00662-400x400.jpg" alt="Wok Crevettes" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Wok de Crevettes aux Légumes</p><p class="mi-desc">Crevettes, légumes, sauce wok maison</p><span class="mi-price">130 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/02/DSC00670-400x400.jpg" alt="Wok Poulet" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Wok de Poulet aux Légumes</p><p class="mi-desc">Légumes croquants, sauce soja, gingembre</p><span class="mi-price">110 Dhs</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DESSERTS — 100% moods.ma ── -->
+  <div class="tc" id="tc-dss">
+    <div class="mgrid">
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Pain-perdu-400x400.jpg" alt="Pain perdu" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Pain Perdu Caramélisé à la Cannelle</p><p class="mi-desc">Caramel, chantilly maison</p><span class="mi-price">20 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Cupcake-400x400.jpg" alt="Cupcake" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Cupcake Chocolat & Noisettes</p><p class="mi-desc">Ganache fondante, noisettes torréfiées</p><span class="mi-price">20 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Bole-de-fruit-400x400.jpg" alt="Fruits" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Assiette de Fruits de Saison</p><p class="mi-desc">Sélection fraîche du marché</p><span class="mi-price">65 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2023/02/DSC00648-400x400.jpg" alt="Tiramisu" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tiramisu au Citron-Gingembre</p><p class="mi-desc">Twist signature maison</p><span class="mi-price">65 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/DSC01361-400x400.jpg" alt="Dessert" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Fondant Chocolat</p><p class="mi-desc">Cœur coulant, glace vanille maison</p><span class="mi-price">65 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Francais-2-400x400.jpg" alt="Tea Time" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Tea Time — Plateau 2 Personnes</p><p class="mi-desc">Grand plateau sucré-salé, boissons incluses</p><span class="mi-price">260 Dhs</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BOISSONS — moods.ma ── -->
+  <div class="tc" id="tc-bsn">
+    <div class="mgrid">
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Libanais-002-400x400.jpg" alt="Café" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Cappuccino</p><p class="mi-desc">Espresso, lait vapeur, mousse onctueuse</p><span class="mi-price">42 Dhs</span></div>
+      </div>
+      <div class="mi r d1">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Libanais-004-400x400.jpg" alt="Boisson" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Thé Marocain</p><p class="mi-desc">Menthe fraîche, théière traditionnelle</p><span class="mi-price">32 Dhs</span></div>
+      </div>
+      <div class="mi r d2">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Libanais-005-400x400.jpg" alt="Smoothie" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Smoothie Coco Mango</p><p class="mi-desc">Mangue fraîche, lait de coco, citron vert</p><span class="mi-price">65 Dhs</span></div>
+      </div>
+      <div class="mi r">
+        <img src="https://moods.ma/menu/wp-content/uploads/2022/07/Libanais-003-400x400.jpg" alt="Jus" loading="lazy" />
+        <div class="mi-b"><p class="mi-name">Jus d'Orange Frais</p><p class="mi-desc">Pressé à la commande</p><span class="mi-price">40 Dhs</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF STRIP -->
+  <div class="pdf-strip r">
+    <div class="pdf-strip-txt">
+      <h3>La carte complète</h3>
+      <p>Téléchargez notre menu complet — toutes les sections, toutes les boissons</p>
+    </div>
+    <a href="moods-menu.pdf" download="Moods-Menu-Casablanca.pdf" class="bdl">↓ &nbsp; Télécharger le menu PDF</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     GALERIE — Pexels, café face à la mer
+════════════════════════════════════════════ -->
+<section id="gallery">
+  <div class="ghdr">
+    <span class="tag r">Galerie</span>
+    <h2 class="h2 r d1">L'ambiance <em>Mood's</em></h2>
+  </div>
+  <div class="gg">
+    <!-- Photo réelle Mood's — terrasse vue mer la nuit -->
+    <div class="gi r"><img src="gallery-terrasse-nuit.jpg" alt="Terrasse Mood's vue sur l'océan la nuit" loading="lazy" /></div>
+    <!-- Photo réelle Mood's — intérieur tea time -->
+    <div class="gi r d1"><img src="gallery-interior-teatime.jpg" alt="Intérieur Mood's Tea Time" loading="lazy" /></div>
+    <!-- Photo réelle Mood's — service terrasse -->
+    <div class="gi r d2"><img src="gallery-service-terrasse.jpg" alt="Service en terrasse Mood's" loading="lazy" /></div>
+    <!-- Photo réelle Mood's — vue marina -->
+    <div class="gi r"><img src="gallery-marina-view.jpg" alt="Vue Marina Casablanca depuis Mood's" loading="lazy" /></div>
+    <!-- Plat signature moods.ma -->
+    <div class="gi r d1"><img src="https://moods.ma/menu/wp-content/uploads/2022/07/Gambas-Pil-Pil-400x400.jpeg" alt="Gambas Pil-Pil" loading="lazy" /></div>
+    <!-- Pizza four à bois moods.ma -->
+    <div class="gi r d2"><img src="https://moods.ma/menu/wp-content/uploads/2023/09/Moods-Menu-015-400x400.jpg" alt="Risotto Truffes" loading="lazy" /></div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div style="text-align:center;margin-bottom:66px">
+    <span class="tag r">L'Expérience</span>
+    <h2 class="h2 r d1">Plus qu'un repas, <em>un moment</em></h2>
+  </div>
+  <div class="ecards">
+    <div class="ec r"><span class="ec-ico">🔥</span><h3>Grillades au Feu de Bois</h3><p>Viandes et poissons grillés à la perfection sur notre four à bois ouvert. Le goût authentique, la fumée naturelle.</p></div>
+    <div class="ec r d1"><span class="ec-ico">🎷</span><h3>Live Music Shows</h3><p>Les soirs de weekend, Mood's s'anime. Artistes locaux, ambiance unique face à l'Atlantique.</p></div>
+    <div class="ec r d2"><span class="ec-ico">🌊</span><h3>Vue sur l'Océan</h3><p>Terrasse face à l'Atlantique, au cœur de la Marina de Casablanca. Le cadre le plus prisé de la ville.</p></div>
+  </div>
+  <div class="fb r">
+    <img src="gallery-marina-view.jpg" alt="Service Mood's Marina" loading="lazy" />
+    <div class="fb-txt">
+      <span class="tag">Servi tous les jours</span>
+      <h2 class="h2">Le petit déjeuner<br>selon <em>Mood's</em></h2>
+      <p>Du "Made in France" au "Tangerois", en passant par le "Libanais" ou le "Healthy" — chaque matin est une invitation à voyager. Choisissez votre humeur, nous faisons le reste.</p>
+      <a href="#menu" class="bdark">Voir les formules</a>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div style="text-align:center;margin-bottom:62px">
+    <span class="tag r">Avis Clients</span>
+    <h2 class="h2 r d1">Ce qu'ils disent de <em>Mood's</em></h2>
+  </div>
+  <div class="rg">
+    <div class="rv r"><div class="rvq">"</div><p class="rvt">An incredible atmosphere near the water, music was popping. The food was exceptional — best dining experience in Morocco so far.</p><div class="rvs">★★★★★</div><div class="rva">Visiteur International</div><div class="rvp">TripAdvisor · Traveler's Choice 2022</div></div>
+    <div class="rv r d1"><div class="rvq">"</div><p class="rvt">Un endroit magnifique à la Marina. Le cadre est sublime, la nourriture délicieuse et le service impeccable. Le tea time est une expérience à part entière.</p><div class="rvs">★★★★★</div><div class="rva">Nadia B.</div><div class="rvp">Google · Casablanca · 4.8/5</div></div>
+    <div class="rv r d2"><div class="rvq">"</div><p class="rvt">The staff noticed what we needed before we even realized it. Live music and an unbeatable view of the Atlantic. Simply top notch.</p><div class="rvs">★★★★★</div><div class="rva">Sara E.</div><div class="rvp">Wanderlog · Casablanca</div></div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section id="location">
+  <div class="lw">
+    <div>
+      <span class="tag r">Nous Trouver</span>
+      <h2 class="h2 r d1" style="margin-bottom:34px">Venez vivre<br>l'expérience <em>Mood's</em></h2>
+      <div class="ir r d1"><div class="ii">📍</div><div><span class="il">Adresse</span><span class="iv">Marina Shopping Center, Casablanca</span></div></div>
+      <div class="ir r d2"><div class="ii">📞</div><div><span class="il">Téléphone</span><span class="iv"><a href="tel:0522202025">05 22 20 20 25</a></span></div></div>
+      <div class="ir r d2"><div class="ii">✉️</div><div><span class="il">Email</span><span class="iv"><a href="mailto:anaszaki@moods.ma">anaszaki@moods.ma</a></span></div></div>
+      <div class="ir r d3"><div class="ii">🕐</div><div><span class="il">Horaires</span><span class="iv">Ouvert 7j/7 · 8h00 – 01h00</span></div></div>
+      <div class="lbtns r d3">
+        <a href="tel:0522202025" class="bgold">Appeler</a>
+        <a href="https://g.page/r/CRaL6TWPQwjAEBA" target="_blank" class="bline">Itinéraire</a>
+        <a href="moods-menu.pdf" download class="bdl">↓ Menu PDF</a>
+      </div>
+    </div>
+    <div class="mw r d2">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3323.08!2d-7.6141!3d33.6063!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7d3ad845a4fb5%3A0xc008438f35e98b16!2sMood&#39;s%20caf%C3%A9%20restaurant!5e0!3m2!1sfr!2sma!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mood's Café"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fg">
+    <div>
+      <span class="flogo">mood<em>'s</em></span>
+      <p class="ftag">Café · Restaurant · Tea Time<br>Marina Casablanca · Ouvert 7j/7<br><br>Where good food meets stunning views.</p>
+      <div class="fsoc">
+        <a href="https://www.instagram.com/moods.caferestaurant/" target="_blank" class="fsl">IG</a>
+        <a href="https://www.facebook.com/moods.caferestaurant/" target="_blank" class="fsl">FB</a>
+        <a href="https://www.tripadvisor.com/Restaurant_Review-g293732-d23444184" target="_blank" class="fsl">TA</a>
+      </div>
+    </div>
+    <div class="fc">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="#about">Notre Histoire</a></li>
+        <li><a href="#menu">Le Menu</a></li>
+        <li><a href="#gallery">Galerie</a></li>
+        <li><a href="#reviews">Avis clients</a></li>
+      </ul>
+    </div>
+    <div class="fc">
+      <h4>Menu</h4>
+      <ul>
+        <li><a href="#menu">Petit Déjeuner</a></li>
+        <li><a href="#menu">Entrées & Salades</a></li>
+        <li><a href="#menu">Plats Principaux</a></li>
+        <li><a href="#menu">Desserts & Tea Time</a></li>
+        <li><a href="moods-menu.pdf" download>↓ Carte PDF</a></li>
+      </ul>
+    </div>
+    <div class="fc">
+      <h4>Contact</h4>
+      <p>Marina Shopping Center<br>Casablanca, Maroc</p><br>
+      <p><a href="tel:0522202025" style="color:var(--or);text-decoration:none">05 22 20 20 25</a></p>
+      <p><a href="mailto:anaszaki@moods.ma" style="color:rgba(245,237,218,.46);text-decoration:none">anaszaki@moods.ma</a></p><br>
+      <p>Ouvert 7j/7 · 8h – 01h</p>
+    </div>
+  </div>
+  <div class="fbot">
+    <p>© 2024 Mood's Café Restaurant · Marina Casablanca · Tous droits réservés</p>
+    <div class="tab2"><div class="tdot"></div><span>Traveler's Choice 2022 · TripAdvisor · 4.8★ Google</span></div>
+  </div>
+</footer>
+
+<script>
+// Cursor
+const C=document.getElementById('C'),CF=document.getElementById('CF');
+let mx=0,my=0,fx=0,fy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;C.style.left=mx+'px';C.style.top=my+'px';});
+(function loop(){fx+=(mx-fx)*.12;fy+=(my-fy)*.12;CF.style.left=fx+'px';CF.style.top=fy+'px';requestAnimationFrame(loop);})();
+// Nav scroll
+const NAV=document.getElementById('NAV');
+window.addEventListener('scroll',()=>NAV.classList.toggle('sc',scrollY>60));
+// Hero parallax unlock
+setTimeout(()=>document.getElementById('HBG2').style.transform='scale(1)',100);
+// Hamburger
+const HBG=document.getElementById('HBG'),MOB=document.getElementById('MOB');
+HBG.addEventListener('click',()=>{HBG.classList.toggle('on');MOB.classList.toggle('on');});
+MOB.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{HBG.classList.remove('on');MOB.classList.remove('on');}));
+// Tabs
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById('tc-'+btn.dataset.t).classList.add('on');
+  });
+});
+// Reveal on scroll
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}});
+});
+</script>
+</body>
+</html>
